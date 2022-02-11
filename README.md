@@ -1,47 +1,53 @@
 # ts-tiny-log-winston
 
-## Development
+## Install
 
-Run a dev test with `npm start`.
+`npm i winston ts-tiny-log ts-tiny-log-winston`
 
-## Running Tests
+## Setup
 
-To run unit tests, `npm run test`
+### Basic
 
-## Scripts
+```typescript
+import * as winston from 'winston';
+import { WinstonLog } from 'ts-tiny-log-winston';
 
-You can write custom scripts in the `script/` directory. See `script/example.ts` as an example. You should also register your scripts in `package.json`:
+// Create a winston ts-tiny-log
+const log: WinstonLog = new WinstonLog({
+	winston: { // Pass winston settings
+		format: winston.format.simple(),
+		levels: winston.config.syslog.levels,
+		transports: [ new winston.transports.Console() ]
+	},
+	winstonOnly: true, // Optional, pass false to log to both standard and winston
+});
 
-```json
-{
-	...
-	"scripts": {
-		...
-		"admin:example": "ts-node script/example"
-	}
-}
+log.fatal('A fatal message!');
 ```
 
-Run your script with `npm run admin:example`
+### With existing winston instance
 
-## Compiling
+If you already have a winston logger instance, you can pass that in instead of logger options:
 
-### Debug Builds
+```typescript
+import * as winston from 'winston';
+import { WinstonLog } from 'ts-tiny-log-winston';
 
-To compile a debug build, run `npm run build:dev`. The build output will appear in the `./dist` folder.
+const winstonLogger = winston.createLogger({
+	format: winston.format.simple(),
+	levels: winston.config.syslog.levels,
+	transports: [ new winston.transports.Console() ]
+});
 
-### Prod Builds
+const log: WinstonLog = new WinstonLog({
+	winston: winstonLogger
+});
 
-To compile a production build, run `npm run build:prod`. The build output will appear in the `./dist` folder.
+log.fatal('A fatal message!');
 
-### Clean Builds
+```
 
-To generate a clean build (removes old artifacts and reruns pre&post process scripts), append `:clean` to a build script:
-- Debug: `npm run build:dev:clean`
-- Release: `npm run build:prod:clean`
+### Options
 
-## More
-
-### Generating Docs
-
-`npm run doc` and browse docs/index.html!
+- **winston** Pass a winston Logger instance or winston LoggerOptions
+- **winstonOnly** (Optional) Setting this to false will allow ts-tiny-log to log to *both* winston and the normal log channel
