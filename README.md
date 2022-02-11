@@ -2,7 +2,7 @@
 
 ## Install
 
-`npm i ts-tiny-log-winston`
+`npm i winston ts-tiny-log ts-tiny-log-winston`
 
 ## Setup
 
