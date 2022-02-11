@@ -10,7 +10,7 @@
 
 ```typescript
 import * as winston from 'winston';
-import { WinstonLog } from '../src';
+import { WinstonLog } from 'ts-tiny-log-winston';
 
 // Create a winston ts-tiny-log
 const log: WinstonLog = new WinstonLog({
@@ -31,7 +31,7 @@ If you already have a winston logger instance, you can pass that in instead of l
 
 ```typescript
 import * as winston from 'winston';
-import { WinstonLog } from '../src';
+import { WinstonLog } from 'ts-tiny-log-winston';
 
 const winstonLogger = winston.createLogger({
 	format: winston.format.simple(),
