@@ -1,4 +1,4 @@
-# typescript-template
+# ts-tiny-log-winston
 
 ## [v2.0.0]
 
