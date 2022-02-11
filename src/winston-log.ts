@@ -5,7 +5,6 @@ import { LogEntryInterface } from 'ts-tiny-log/entries';
 import { LogLevel } from 'ts-tiny-log/levels';
 
 import { WinstonLogSettingsInterface, defaultWinstonLogSettings } from './settings';
-import { formatEntry } from './format-entry';
 
 /**
  * @internal
@@ -19,6 +18,11 @@ export const winstonLogLevels = {
 	info: 'info',
 	debug: 'debug',
 };
+
+export interface FormattedEntryInterface {
+	message?: string;
+	data?: any | any[];
+}
 
 /**
  * ts-tiny-log with tap to winston
@@ -45,6 +49,67 @@ export class WinstonLog extends BaseLog {
 	}
 
 	/**
+	 * Format an entry argument
+	 *
+	 * @param data
+	 * @returns
+	 */
+	protected formatArgument(data) {
+		const type = typeof data;
+
+		if (Array.isArray(data)) {
+			return { array: data };
+		}
+		else if (data instanceof Error) {
+			return {
+				message: data.message,
+				name: data.name,
+				stack: data.stack,
+			};
+		}
+		else if (typeof data !== 'object') {
+			return { [type]: data };
+		}
+		else {
+			return data;
+		}
+	}
+	/**
+	 * Format entry
+	 *
+	 * @param entry
+	 * @returns
+	 */
+	protected formatEntry(entry: LogEntryInterface) {
+		let message = '';
+		let data: any = [].concat(entry.data);
+
+		// Check if there is a message argument in the entry
+		if (
+			entry.data &&
+			entry.data.length &&
+			typeof entry.data[0] === 'string'
+		) {
+			// Use the argument as the message and remove it from the data
+			message += data[0];
+			data.splice(0, 1);
+		}
+
+		if (data.length > 1) {
+			data = data.map(this.formatArgument);
+			data = { arguments: data };
+		}
+		else if (data.length === 1) {
+			data = this.formatArgument(data[0]);
+		}
+		else {
+			data = '';
+		}
+
+		return { message, data };
+	}
+
+	/**
 	 * Log to winston
 	 *
 	 * @param entry Log entry
@@ -54,7 +119,7 @@ export class WinstonLog extends BaseLog {
 		const winstonLevel: string = winstonLogLevels[logLevelName];
 
 		// Log to winston
-		const { message, data } = formatEntry(entry);
+		const { message, data } = this.formatEntry(entry);
 		this.winstonLogger.log(winstonLevel, message, data);
 	}
 
