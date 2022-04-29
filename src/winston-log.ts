@@ -137,4 +137,13 @@ export class WinstonLog extends BaseLog {
 			super.log(entry);
 		}
 	}
+
+	/**
+	 * Close the log connection
+	 */
+	protected close(): void {
+		if (this.winstonLogger?.close) {
+			this.winstonLogger.close();
+		}
+	}
 }

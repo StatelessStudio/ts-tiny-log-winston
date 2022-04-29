@@ -23,6 +23,7 @@ const log: WinstonLog = new WinstonLog({
 });
 
 log.fatal('A fatal message!');
+log.close();
 ```
 
 ### With existing winston instance
@@ -44,6 +45,7 @@ const log: WinstonLog = new WinstonLog({
 });
 
 log.fatal('A fatal message!');
+log.close();
 
 ```
 
