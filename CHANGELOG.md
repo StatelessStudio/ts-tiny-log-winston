@@ -1,5 +1,11 @@
 # ts-tiny-log-winston
 
+## [1.2.0]
+
+### Additions
+
+### Fixes
+
 ## [1.1.0]
 
 ### Additions
